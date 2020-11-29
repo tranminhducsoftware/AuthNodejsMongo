@@ -2,8 +2,17 @@ const router = require("express").Router();
 const User = require("../model/User");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
+const cors = require("cors");
 const { registerValidation, loginValidation } = require("../validation");
 
+router.use(function (req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*"); // update to match the domain you will make the request from
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  next();
+});
 router.post("/register", async (req, res) => {
   // LETS VALIDATE THE DATA BEFORE WE ADD USER
   const { error } = registerValidation(req.body);
@@ -32,6 +41,7 @@ router.post("/register", async (req, res) => {
 });
 
 router.post("/login", async (req, res) => {
+
   // LETS VALIDATE THE DATA BEFORE WE ADD USER
   const { error } = loginValidation(req.body);
   if (error) return res.status(400).send(error.details[0].message);
